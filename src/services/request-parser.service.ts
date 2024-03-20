@@ -1,12 +1,20 @@
 import { IncomingMessage, ServerResponse } from 'http';
-import * as bodyParser from 'body-parser';
+import { URL } from 'url';
 import busboy from 'busboy';
+import * as bodyParser from 'body-parser';
 
 import { ContentType, CustomRequest } from '../shared';
 import { CustomError } from '../core/errors';
 
 const jsonParser = bodyParser.json({ limit: '10mb' });
 const urlencodedParser = bodyParser.urlencoded({ extended: true });
+
+export async function parseUrl(req: IncomingMessage): Promise<URL> {
+  const parsedUrl = new URL(req.url || '', `https://${req.headers.host}`);
+  parsedUrl.pathname = parsedUrl.pathname.replace(/^\/api/, '');
+
+  return parsedUrl;
+}
 
 export async function parseRequest(req: IncomingMessage, res: ServerResponse): Promise<CustomRequest> {
   return new Promise( async (resolve, reject) => {
@@ -34,12 +42,20 @@ async function parseFormData(req: IncomingMessage): Promise<void> {
     const bb = busboy({ headers: req.headers });
     const formData: any = {};
 
-    bb.on('file', (fieldName: string, fileStream: NodeJS.ReadableStream, fileName: string, __: string, mimeType: string) => {
-      fileStream.on('data', (data) => {
-        formData[fieldName] = data;
-      });
+    bb.on(
+      'file',
+      (
+        fieldName: string,
+        fileStream: NodeJS.ReadableStream,
+        fileName: string,
+        __: string,
+        mimeType: string
+      ) => {
+        fileStream.on('data', (data) => {
+          formData[fieldName] = data;
+        });
 
-      fileStream.on('end', () => {});
+        fileStream.on('end', () => {});
     });
 
     bb.on('field', (fieldName: string, val: any) => {
