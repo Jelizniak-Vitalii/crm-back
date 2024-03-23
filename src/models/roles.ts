@@ -10,6 +10,8 @@ export const createRolesTable = async () => {
        );
     `);
 
+    await pool.query(`INSERT INTO roles VALUES (1, 'Admin')`);
+
     log('Roles table created successfully');
   } catch (error: any) {
     log(`Error creating roles table: ${error.message}`, LogLevel.ERROR);
