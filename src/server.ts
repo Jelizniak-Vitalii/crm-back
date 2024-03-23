@@ -4,6 +4,7 @@ import cors from 'cors';
 import { handleRequest } from './routes';
 import { handleError } from './core/errors';
 import { parseRequest, parseUrl } from './services';
+import { CustomRequest } from './shared';
 
 const corsMiddleware = cors({
   methods: 'GET,POST,PUT,DELETE'
@@ -19,7 +20,7 @@ export const server = http.createServer(async (req: IncomingMessage, res: Server
     await handleCors(req, res);
     await parseRequest(req, res);
 
-    await handleRequest(req, res, parsedUrl);
+    await handleRequest(req as CustomRequest, res, parsedUrl);
   } catch (error) {
     await handleError(error, res);
   }
