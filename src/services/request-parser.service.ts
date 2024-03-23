@@ -5,16 +5,13 @@ import * as bodyParser from 'body-parser';
 
 import { ContentType, CustomRequest } from '../shared';
 import { CustomError } from '../core/errors';
-import { log } from '../utils/logger';
 
 const jsonParser = bodyParser.json({ limit: '10mb' });
 const urlencodedParser = bodyParser.urlencoded({ extended: true });
 
 export async function parseUrl(req: IncomingMessage): Promise<URL> {
   const parsedUrl = new URL(req.url || '', `https://${req.headers.host}`);
-  parsedUrl.pathname = parsedUrl.pathname.replace(/^\/api-crm/, '');
-  log(JSON.stringify(req.url));
-  log(JSON.stringify(parsedUrl));
+  parsedUrl.pathname = parsedUrl.pathname.replace(/^\/crm/, '');
 
   return parsedUrl;
 }
