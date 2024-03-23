@@ -12,7 +12,7 @@ const urlencodedParser = bodyParser.urlencoded({ extended: true });
 export async function parseUrl(req: IncomingMessage): Promise<URL> {
   const parsedUrl = new URL(req.url || '', `https://${req.headers.host}`);
   parsedUrl.pathname = parsedUrl.pathname.replace(/^\/api-crm/, '');
-
+  console.log(req.url, 'req.url');
   return parsedUrl;
 }
 
