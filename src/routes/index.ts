@@ -5,7 +5,7 @@ import { CustomRequest, RoutePath } from '../shared';
 
 export async function handleRequest(req: CustomRequest, res: ServerResponse, url: URL) {
   const routeHandler = routes[url.pathname as RoutePath];
-  console.log(url);
+
   if (routeHandler) {
     try {
       await routeHandler(req, res);
